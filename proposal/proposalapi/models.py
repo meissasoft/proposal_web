@@ -8,7 +8,8 @@ from .managers import CustomUserManager
 
 
 
-
+def nameFile(instance, filename):
+    return '/'.join(['images', filename])
 
 
 
@@ -28,7 +29,7 @@ class UserRegistration(AbstractUser):
     year_of_experience = models.CharField(max_length=100, blank=True, null=True)
     languages = models.CharField(max_length=500, blank=True, null=True)
     role = models.PositiveSmallIntegerField(choices=Roles.choices, default=Roles.USER)
-    profile_picture = models.FileField()
+    profile_picture = models.ImageField(upload_to=nameFile, blank=True, null=True)
     price_range = models.CharField(max_length=100, blank=True, null=True)
     resume_drive_link = models.CharField(blank=True, max_length=1000, null=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)

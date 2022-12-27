@@ -27,7 +27,6 @@ urlpatterns = [
 
     path('get/<str:pk>', views.GetSingle.as_view(), name='get_single'),
     path('get/<str:pk>', views.GetUser.as_view(), name='get_user'),
-    path('get_by_user<str:pk>', views.GetTodoByUserId.as_view(), name='get_by_user'),
     path('getuser<str:pk>', views.GetUser.as_view(), name='get_user'),
 
     path('update/<str:pk>', views.UpdateTodo.as_view(), name='get_update'),

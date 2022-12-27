@@ -34,8 +34,8 @@ class GetSingle(APIView):
 
 class GetUser(APIView):
     serializer_class = RegisterSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
     allowed_methods = ('GET',)
 
     def get(self, request, pk, *args, **kwargs):
@@ -115,25 +115,29 @@ class DeleteTodo(CreateAPIView):
         return Response({"Error": "Can't allow to delete this todo"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class  RegisterUser(CreateAPIView):
+class RegisterUser(CreateAPIView):
     serializer_class = RegisterSerializer
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
     allowed_methods = ('POST',)
     parser_classes = (FormParser, MultiPartParser)
     def post(self, request, *args, **kwargs):
-        serializer = RegisterSerializer(data=request.data)
-        data = {}
-        if serializer.is_valid():
-            account = serializer.save()
-            data['email'] = account.email
-            data['username'] = account.username
-            data['id'] = account.id
+        file = request.data['profile_picture']
+        UserRegistration.objects.create(username=request.data['username'],email=request.data['email'],password=request.data['password'],profile_picture=file)
 
-        else:
-            data = serializer.errors
-            print('Error', data.keys())
-        return Response(data)
+
+        # serializer = RegisterSerializer(data=request.data, files=request.FILES)
+        # data = {}
+        # if serializer.is_valid():
+        #     account = serializer.save()
+        #     data['email'] = account.email
+        #     data['username'] = account.username
+        #     data['id'] = account.id
+        #
+        # else:
+        #     data = serializer.errors
+        #     print('Error', data.keys())
+        return Response({"message":"sucess"})
 
 
 class SearchData(ListAPIView):
