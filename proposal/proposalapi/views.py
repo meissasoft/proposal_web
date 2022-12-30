@@ -10,7 +10,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 import base64
 from django.core.files.base import ContentFile
 
@@ -32,20 +32,7 @@ class GetSingle(APIView):
         serializer = TodoSerializer(get_all)
         return Response(serializer.data)
 
-class GetUser(APIView):
-    serializer_class = RegisterSerializer
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
-    allowed_methods = ('GET',)
 
-    def get(self, request, pk, *args, **kwargs):
-        try:
-            get_user = UserRegistration.objects.get(id=pk)
-        except Exception as e:
-            print("error", e)
-            return Response({"Error": "This Todo not found"}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = RegisterSerializer(get_user)
-        return Response(serializer.data)
 
 class UpdateTodo(CreateAPIView):
     serializer_class = TodoPostSerializer
@@ -117,27 +104,62 @@ class DeleteTodo(CreateAPIView):
 
 class RegisterUser(CreateAPIView):
     serializer_class = RegisterSerializer
+    allowed_methods = ('POST',)
+    parser_classes = [MultiPartParser, FormParser]
+    def post(self, request, format=None):
+        serializer = RegisterSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            account = serializer.save()
+            data['email'] = account.email
+            data['username'] = account.username
+            data['id'] = account.id
+
+        else:
+            data = serializer.errors
+            print('Error', data.keys())
+        return Response({"detail":data})
+
+
+class GetUser(APIView):
+    serializer_class = RegisterSerializer
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [IsAuthenticated]
-    allowed_methods = ('POST',)
-    parser_classes = (FormParser, MultiPartParser)
-    def post(self, request, *args, **kwargs):
-        file = request.data['profile_picture']
-        UserRegistration.objects.create(username=request.data['username'],email=request.data['email'],password=request.data['password'],profile_picture=file)
+    allowed_methods = ('GET',)
 
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            get_user = UserRegistration.objects.get(id=pk)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This User not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = RegisterSerializer(get_user)
+        return Response(serializer.data)
 
-        # serializer = RegisterSerializer(data=request.data, files=request.FILES)
-        # data = {}
-        # if serializer.is_valid():
-        #     account = serializer.save()
-        #     data['email'] = account.email
-        #     data['username'] = account.username
-        #     data['id'] = account.id
-        #
-        # else:
-        #     data = serializer.errors
-        #     print('Error', data.keys())
-        return Response({"message":"sucess"})
+class UpdateUser(CreateAPIView):
+    serializer_class = RegisterSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    allowed_methods = ('PUT',)
+    parser_classes = [MultiPartParser, FormParser]
+
+    def put(self, request, *args, **kwargs):
+        current_user_id = request.user.id
+        print(current_user_id)
+        user_obj = UserRegistration.objects.get(id= current_user_id)
+        print(user_obj.email)
+        try:
+            user_obj = UserRegistration.objects.get(id=current_user_id)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This Todo not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = TodoPostSerializer(instance=user_obj,  data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class SearchData(ListAPIView):

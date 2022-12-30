@@ -32,7 +32,8 @@ urlpatterns = [
     path('update/<str:pk>', views.UpdateTodo.as_view(), name='get_update'),
     path('add_todo', views.CreateTask.as_view(), name='add_todo'),
     path('delete_todo/<str:pk>', views.DeleteTodo.as_view(), name='remove todo'),
-    path('register', views.RegisterUser.as_view(), name='register'),
+    path('registerUser', views.RegisterUser.as_view(), name='register'),
+    path('updateUser', views.UpdateUser.as_view(), name='UpdateUser'),
     path('login', obtain_auth_token, name="Get Token"),
 
     path('get', views.SearchData.as_view(), name='Search Data')
