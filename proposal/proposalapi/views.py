@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from . serializer import TodoSerializer, RegisterSerializer, TodoPostSerializer
+from .serializer import TodoSerializer, RegisterSerializer, TodoPostSerializer, UpdateRegisterSerializer
 from .models import Todo, UserRegistration
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
@@ -136,25 +136,29 @@ class GetUser(APIView):
         serializer = RegisterSerializer(get_user)
         return Response(serializer.data)
 
-class UpdateUser(CreateAPIView):
-    serializer_class = RegisterSerializer
+class UpdateUser(UpdateAPIView):
+    serializer_class = UpdateRegisterSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     allowed_methods = ('PUT',)
     parser_classes = [MultiPartParser, FormParser]
 
-    def put(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         current_user_id = request.user.id
         print(current_user_id)
-        user_obj = UserRegistration.objects.get(id= current_user_id)
-        print(user_obj.email)
+        kwargs['partial'] = True
+        # user_obj = UserRegistration.objects.get(id= current_user_id)
+        # print(user_obj.email)
         try:
             user_obj = UserRegistration.objects.get(id=current_user_id)
+            print(user_obj.id)
+            print(user_obj.email)
+
         except Exception as e:
             print("error", e)
             return Response({"Error": "This Todo not found"}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = TodoPostSerializer(instance=user_obj,  data=request.data)
+        serializer = UpdateRegisterSerializer(instance=user_obj,  data=request.data,context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
