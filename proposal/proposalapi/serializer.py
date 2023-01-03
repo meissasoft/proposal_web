@@ -71,3 +71,13 @@ class UpdateRegisterSerializer(serializers.ModelSerializer):
         account.set_password(password)
         account.save()
         return account.password
+
+
+
+class RemoveUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserRegistration
+        fields = ('username', 'email', 'password','linkdin_url','mobile_no','linkdin_url','github_url','stack','year_of_experience','languages',
+                  'role','profile_picture','price_range','resume_drive_link'
+                  )

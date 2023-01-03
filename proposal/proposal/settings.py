@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'proposalapi',
+    'projectapi',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',

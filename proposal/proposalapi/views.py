@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializer import TodoSerializer, RegisterSerializer, TodoPostSerializer, UpdateRegisterSerializer
+from .serializer import TodoSerializer, RegisterSerializer, TodoPostSerializer, UpdateRegisterSerializer, \
+    RemoveUserSerializer
 from .models import Todo, UserRegistration
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
@@ -15,93 +16,6 @@ import base64
 from django.core.files.base import ContentFile
 
 # Create your views here.
-
-class GetSingle(APIView):
-    serializer_class = TodoSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    allowed_methods = ('GET',)
-
-    def get(self, request, pk, *args, **kwargs):
-        get_all = {}
-        try:
-            get_all = Todo.objects.get(id=pk)
-        except Exception as e:
-            print("error", e)
-            return Response({"Error": "This Todo not found"}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = TodoSerializer(get_all)
-        return Response(serializer.data)
-
-
-
-class UpdateTodo(CreateAPIView):
-    serializer_class = TodoPostSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    allowed_methods = ('PUT',)
-
-    def put(self, request, pk, *args, **kwargs):
-        get_all = {}
-        try:
-            get_all = Todo.objects.get(id=pk)
-        except Exception as e:
-            print("error", e)
-            return Response({"Error": "This Todo not found"}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = TodoPostSerializer(instance=get_all,  data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GetTodoByUserId(APIView):
-    def get(self, request, pk, *args, **kwargs):
-        get_all = Todo.objects.filter(user=pk)
-        serializer = TodoSerializer(get_all, many=True)
-        return Response(serializer.data)
-
-
-class CreateTask(CreateAPIView):
-    serializer_class = TodoPostSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    allowed_methods = ('POST',)
-
-    def post(self, request):
-        current_user = request.user.id
-        data = request.data
-        data['user'] = current_user
-
-        serializer = TodoSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class DeleteTodo(CreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    allowed_methods = ('DELETE',)
-
-    def delete(self, request, pk):
-        current_user = request.user.id
-        get_all = {}
-        try:
-            get_all = Todo.objects.get(id=pk)
-        except Exception as e:
-            print("error", e)
-            return Response({"Error": "This Todo not found"}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = TodoSerializer(get_all)
-        user_id = get_all.user.id
-
-        if(current_user == user_id):
-            get_all.delete()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({"Error": "Can't allow to delete this todo"}, status=status.HTTP_400_BAD_REQUEST)
-
-
 class RegisterUser(CreateAPIView):
     serializer_class = RegisterSerializer
     allowed_methods = ('POST',)
@@ -121,10 +35,8 @@ class RegisterUser(CreateAPIView):
         return Response({"detail":data})
 
 
-class GetUser(APIView):
+class GetUserById(APIView):
     serializer_class = RegisterSerializer
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [IsAuthenticated]
     allowed_methods = ('GET',)
 
     def get(self, request, pk, *args, **kwargs):
@@ -136,7 +48,24 @@ class GetUser(APIView):
         serializer = RegisterSerializer(get_user)
         return Response(serializer.data)
 
-class UpdateUser(UpdateAPIView):
+
+class GetCurrentUser(APIView):
+    serializer_class = RegisterSerializer
+    allowed_methods = ('POST',)
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request,*args, **kwargs):
+        try:
+            current_user_id = request.user.id
+            print(current_user_id)
+            get_user = UserRegistration.objects.get(id=current_user_id)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This User not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = RegisterSerializer(get_user)
+        return Response(serializer.data)
+
+class UpdateCurrentUser(UpdateAPIView):
     serializer_class = UpdateRegisterSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -164,7 +93,19 @@ class UpdateUser(UpdateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class DeleteUser(CreateAPIView):
+    allowed_methods = ('DELETE',)
 
+    def delete(self, request, pk):
+        try:
+            get_user_obj = UserRegistration.objects.get(id=pk)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This User not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = RemoveUserSerializer(get_user_obj)
+
+        get_user_obj.delete()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class SearchData(ListAPIView):
     authentication_classes = [TokenAuthentication]
