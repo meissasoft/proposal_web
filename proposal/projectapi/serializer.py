@@ -1,6 +1,6 @@
 import email
 from rest_framework import serializers
-from .models import Project
+from .models import Project, ProjectTemplate
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -9,9 +9,11 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ('name','description','tags','project_url_link','languages','platform','project_github_link','project_earning',
                   )
 
+class ProjectTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectTemplate
+        fields = "__all__"
 
-# class TodoPostSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Todo
-#         fields = 'title', 'description'
+
+
 

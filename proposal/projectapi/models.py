@@ -1,5 +1,11 @@
 from django.db import models
 
+from proposalapi.models import UserRegistration
+
+
+# from proposalapi.models import UserRegistration
+
+
 # Create your models here.
 class Project(models.Model):
     name = models.CharField(max_length=500)
@@ -14,4 +20,22 @@ class Project(models.Model):
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
+class UserProject(models.Model):
+    user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
+    project_id = models.ForeignKey(Project,null=True, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)
 
+
+class ProjectTemplate(models.Model):
+    class Status(models.IntegerChoices):
+        """Roles for user model
+        """
+        CREATED = 1
+        DELETED = 2
+
+    name = models.CharField(max_length=500)
+    content = models.CharField(max_length=20000, default=None)
+    status = models.PositiveSmallIntegerField(choices=Status.choices, default=Status.CREATED)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)
