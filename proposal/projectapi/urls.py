@@ -29,8 +29,9 @@ urlpatterns = [
 
     # path('updateUser', views.UpdateCurrentUser.as_view(), name='UpdateUser'),
     path('getprojectbyid<str:pk>', views.GetProjectById.as_view(), name='Get_Project_By_Id'),
+    path('updateproject<str:pk>', views.UpdateProject.as_view(), name='updateProject'),
     # path('get_current_user', views.GetCurrentUser.as_view(), name='get_current_user'),
-    # path('delete_user/<str:pk>', views.DeleteUser.as_view(), name='Delete_user_by_id'),
+    path('delete_project/<str:pk>', views.DeleteProject.as_view(), name='Delete_project_by_id'),
 
     # url for projecttemplate
     path('create_project_ template', views.CreateProjectTemplate.as_view(), name='create_project_template'),
