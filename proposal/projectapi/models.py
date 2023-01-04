@@ -29,8 +29,6 @@ class UserProject(models.Model):
 
 class ProjectTemplate(models.Model):
     class Status(models.IntegerChoices):
-        """Roles for user model
-        """
         CREATED = 1
         DELETED = 2
 
@@ -39,3 +37,27 @@ class ProjectTemplate(models.Model):
     status = models.PositiveSmallIntegerField(choices=Status.choices, default=Status.CREATED)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
+
+class ProposalTemplate(models.Model):
+    class Status(models.IntegerChoices):
+        CREATED = 1
+        DELETED = 2
+
+    name = models.CharField(max_length=500)
+    content = models.CharField(max_length=20000, default=None)
+    status = models.PositiveSmallIntegerField(choices=Status.choices, default=Status.CREATED)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)
+
+
+class UserProjectTemplate(models.Model):
+    user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)
+
+class UserProposalemplate(models.Model):
+    user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)
+
+    models.JSONField

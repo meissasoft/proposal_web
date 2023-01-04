@@ -56,11 +56,6 @@ class CreateProjectTemplate(CreateAPIView):
             print('Error', data.keys())
         return Response({"detail":data})
 
-#
-
-        return Response({"detail": data})
-
-
 
 class GetProjectById(APIView):
     serializer_class = ProjectSerializer
@@ -109,14 +104,35 @@ class DeleteProject(DestroyAPIView):
         get_project_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# class SearchData(ListAPIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-#     queryset = Todo.objects.all()
-#     serializer_class = TodoSerializer
-#     filter_backends = [SearchFilter]
-#     search_fields = ['title', 'description']
-# from django.shortcuts import render
-#
-# # Create your views here.
 
+class CreateProjectTemplate(CreateAPIView):
+    serializer_class = ProjectTemplateSerializer
+    allowed_methods = ('POST',)
+    def post(self, request, format=None):
+        serializer = ProjectTemplateSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            projecttemplate = serializer.save()
+            data['name'] = projecttemplate.name
+            data['content'] = projecttemplate.content
+            data['status'] = projecttemplate.status
+
+            data['id'] = projecttemplate.id
+
+        else:
+            data = serializer.errors
+            print('Error', data.keys())
+        return Response({"detail":data})
+
+class GetProjectById(APIView):
+    serializer_class = ProjectSerializer
+    allowed_methods = ('GET',)
+
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            get_project = Project.objects.get(id=pk)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "Project not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = ProjectSerializer(get_project)
+        return Response(serializer.data)
