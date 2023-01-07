@@ -1,6 +1,6 @@
 import email
 from rest_framework import serializers
-from .models import Project, ProjectTemplate, ProposalTemplate
+from .models import JobPost, Project, ProjectTemplate, ProposalTemplate, UserProjectTemplate, UserProposaltemplate
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -19,4 +19,22 @@ class ProjectTemplateSerializer(serializers.ModelSerializer):
 class ProposalTemplateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProposalTemplate
+        fields = "__all__"
+
+
+class UserProjectTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProjectTemplate
+        fields = "__all__"
+
+
+class UserProposalTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProposaltemplate
+        fields = "__all__"
+
+
+class JobPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobPost
         fields = "__all__"

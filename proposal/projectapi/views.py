@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializer import ProjectSerializer, ProjectTemplateSerializer, ProposalTemplateSerializer
-from .models import Project, ProjectTemplate, ProposalTemplate
+from .serializer import JobPostSerializer, ProjectSerializer, ProjectTemplateSerializer, ProposalTemplateSerializer, UserProjectTemplateSerializer, UserProposalTemplateSerializer
+from .models import JobPost, Project, ProjectTemplate, ProposalTemplate, UserProjectTemplate, UserProposaltemplate
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.views import APIView
 from rest_framework import status
@@ -16,7 +16,7 @@ from drf_yasg.utils import swagger_auto_schema
 #
 # Create your views here.
 
-
+# Project CRUD
 class CreateProject(CreateAPIView):
     serializer_class = ProjectSerializer
     allowed_methods = ('POST',)
@@ -49,6 +49,7 @@ class ProjectListView(ListAPIView):
             return Response({"Error": "Project not found"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = ProjectSerializer(get_project, many=True)
         return Response(serializer.data)
+
 
 class GetProjectById(APIView):
     serializer_class = ProjectSerializer
@@ -98,6 +99,7 @@ class DeleteProject(DestroyAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# Project Template CRUD
 class CreateProjectTemplate(CreateAPIView):
     serializer_class = ProjectTemplateSerializer
     allowed_methods = ('POST',)
@@ -118,6 +120,7 @@ class CreateProjectTemplate(CreateAPIView):
             print('Error', data.keys())
         return Response({"detail": data})
 
+
 class ProjectTemplateListView(ListAPIView):
     serializer_class = ProjectTemplateSerializer
     allowed_methods = ('GET',)
@@ -130,6 +133,7 @@ class ProjectTemplateListView(ListAPIView):
             return Response({"Error": "Project Templates not found"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = ProjectTemplateSerializer(get_projectTemplate, many=True)
         return Response(serializer.data)
+
 
 class UpdateProjectTemplate(UpdateAPIView):
     serializer_class = ProjectTemplateSerializer
@@ -163,7 +167,9 @@ class DeleteProjectTemplate(DestroyAPIView):
         serializer = ProjectTemplateSerializer(get_projectTemplate_obj)
         get_projectTemplate_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+
+# Proposal Template CRUD
 class CreateProposalTemplate(CreateAPIView):
     serializer_class = ProposalTemplateSerializer
     allowed_methods = ('POST',)
@@ -181,7 +187,8 @@ class CreateProposalTemplate(CreateAPIView):
             data = serializer.errors
             print('Error', data.keys())
         return Response({"detail": data})
-    
+
+
 class ProposalTemplateListView(ListAPIView):
     serializer_class = ProposalTemplateSerializer
     allowed_methods = ('GET',)
@@ -192,9 +199,11 @@ class ProposalTemplateListView(ListAPIView):
         except Exception as e:
             print("error", e)
             return Response({"Error": "Proposal Templates not found"}, status=status.HTTP_400_BAD_REQUEST)
-        serializer = ProposalTemplateSerializer(get_proposalTemplate, many=True)
+        serializer = ProposalTemplateSerializer(
+            get_proposalTemplate, many=True)
         return Response(serializer.data)
-    
+
+
 class UpdateProposalTemplate(UpdateAPIView):
     serializer_class = ProposalTemplateSerializer
     allowed_methods = ('PUT',)
@@ -226,4 +235,217 @@ class DeleteProposalTemplate(DestroyAPIView):
             return Response({"Error": "This Proposal Template was not found"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = ProposalTemplateSerializer(get_proposalTemplate_obj)
         get_proposalTemplate_obj.delete()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# User Project Template CRUD
+class CreateUserProjectTemplate(CreateAPIView):
+    serializer_class = UserProjectTemplateSerializer
+    allowed_methods = ('POST',)
+
+    def post(self, request, format=None):
+        serializer = UserProjectTemplateSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            userprojecttemplate = serializer.save()
+            data['user_id'] = userprojecttemplate.id
+            data['created'] = userprojecttemplate.created
+            data['modified'] = userprojecttemplate.modified
+
+        else:
+            data = serializer.errors
+            print('Error', data.keys())
+        return Response({"detail": data})
+
+
+class UserProjectTemplateListView(ListAPIView):
+    serializer_class = UserProjectTemplateSerializer
+    allowed_methods = ('GET',)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            get_userprojectTemplate = UserProjectTemplate.objects.all()
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "User Project Templates not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserProjectTemplateSerializer(
+            get_userprojectTemplate, many=True)
+        return Response(serializer.data)
+
+
+class UpdateUserProjectTemplate(UpdateAPIView):
+    serializer_class = UserProjectTemplateSerializer
+    allowed_methods = ('PUT',)
+
+    def update(self, request, pk, *args, **kwargs):
+        kwargs['partial'] = True
+        try:
+            userprojectTemplate_obj = UserProjectTemplate.objects.get(id=pk)
+            print(userprojectTemplate_obj.id)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This User Project Template was not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserProjectTemplateSerializer(
+            instance=userprojectTemplate_obj,  data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteUserProjectTemplate(DestroyAPIView):
+    allowed_methods = ('DELETE',)
+
+    def delete(self, request, pk):
+        try:
+            get_userprojectTemplate_obj = UserProjectTemplate.objects.get(
+                id=pk)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This User Project Template was not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserProjectTemplateSerializer(get_userprojectTemplate_obj)
+        get_userprojectTemplate_obj.delete()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# User Proposal Template CRUD
+class CreateUserProposalTemplate(CreateAPIView):
+    serializer_class = UserProposalTemplateSerializer
+    allowed_methods = ('POST',)
+
+    def post(self, request, format=None):
+        serializer = UserProposalTemplateSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            userproposalTemplate = serializer.save()
+            data['user_id'] = userproposalTemplate.user_id
+            data['created'] = userproposalTemplate.created
+            data['modified'] = userproposalTemplate.modified
+        else:
+            data = serializer.errors
+            print('Error', data.keys())
+        return Response({"detail": data})
+
+
+class UserProposalTemplateListView(ListAPIView):
+    serializer_class = UserProposalTemplateSerializer
+    allowed_methods = ('GET',)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            get_userproposalTemplate = UserProposaltemplate.objects.all()
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "User Proposal Templates not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserProposalTemplateSerializer(
+            get_userproposalTemplate, many=True)
+        return Response(serializer.data)
+
+
+class UpdateUserProposalTemplate(UpdateAPIView):
+    serializer_class = UserProposalTemplateSerializer
+    allowed_methods = ('PUT',)
+
+    def update(self, request, pk, *args, **kwargs):
+        kwargs['partial'] = True
+        try:
+            userproposalTemplate_obj = UserProposaltemplate.objects.get(id=pk)
+            print(userproposalTemplate_obj.id)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This User Proposal Template was not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserProposalTemplateSerializer(
+            instance=userproposalTemplate_obj,  data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteUserProposalTemplate(DestroyAPIView):
+    allowed_methods = ('DELETE',)
+
+    def delete(self, request, pk):
+        try:
+            get_userproposalTemplate_obj = UserProposaltemplate.objects.get(
+                id=pk)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This User Proposal Template was not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserProposalTemplateSerializer(
+            get_userproposalTemplate_obj)
+        get_userproposalTemplate_obj.delete()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# JobPost CRUD
+class CreateJobPost(CreateAPIView):
+    serializer_class = JobPostSerializer
+    allowed_methods = ('POST',)
+
+    def post(self, request, format=None):
+        serializer = JobPostSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            JobPostTemplate = serializer.save()
+            data['proposal_template_id'] = JobPostTemplate.proposal_template_id
+            data['project_id'] = JobPostTemplate.project_id
+            data['user_id'] = JobPostTemplate.user_id
+            data['job_url_link'] = JobPostTemplate.job_url_link
+            data['created'] = JobPostTemplate.created
+            data['modified'] = JobPostTemplate.modified
+        else:
+            data = serializer.errors
+            print('Error', data.keys())
+        return Response({"detail": data})
+
+
+class JobPostListView(ListAPIView):
+    serializer_class = JobPostSerializer
+    allowed_methods = ('GET',)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            get_JobPost = JobPost.objects.all()
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "JobPost not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = JobPostSerializer(
+            get_JobPost, many=True)
+        return Response(serializer.data)
+
+
+class UpdateJobPost(UpdateAPIView):
+    serializer_class = JobPostSerializer
+    allowed_methods = ('PUT',)
+
+    def update(self, request, pk, *args, **kwargs):
+        kwargs['partial'] = True
+        try:
+            JobPost_obj = JobPost.objects.get(id=pk)
+            print(JobPost_obj.id)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This JobPost was not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = JobPostSerializer(
+            instance=JobPost_obj,  data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteJobPost(DestroyAPIView):
+    allowed_methods = ('DELETE',)
+
+    def delete(self, request, pk):
+        try:
+            get_JobPost_obj = JobPost.objects.get(
+                id=pk)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This JobPost was not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = JobPostSerializer(
+            get_JobPost_obj)
+        get_JobPost_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)

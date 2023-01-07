@@ -21,8 +21,10 @@ class Project(models.Model):
 
 
 class UserProject(models.Model):
-    user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
-    project_id = models.ForeignKey(Project,null=True, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(
+        UserRegistration, null=True, on_delete=models.CASCADE)
+    project_id = models.ForeignKey(
+        Project, null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
@@ -34,9 +36,11 @@ class ProjectTemplate(models.Model):
 
     name = models.CharField(max_length=500)
     content = models.CharField(max_length=20000, default=None)
-    status = models.PositiveSmallIntegerField(choices=Status.choices, default=Status.CREATED)
+    status = models.PositiveSmallIntegerField(
+        choices=Status.choices, default=Status.CREATED)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
+
 
 class ProposalTemplate(models.Model):
     class Status(models.IntegerChoices):
@@ -45,26 +49,33 @@ class ProposalTemplate(models.Model):
 
     name = models.CharField(max_length=500)
     content = models.CharField(max_length=20000, default=None)
-    status = models.PositiveSmallIntegerField(choices=Status.choices, default=Status.CREATED)
+    status = models.PositiveSmallIntegerField(
+        choices=Status.choices, default=Status.CREATED)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
 class UserProjectTemplate(models.Model):
-    user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(
+        UserRegistration, null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
+
 class UserProposaltemplate(models.Model):
-    user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(
+        UserRegistration, null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
 class JobPost(models.Model):
-    proposal_template_id = models.ForeignKey(ProposalTemplate,null=True, on_delete=models.CASCADE)
-    project_id = models.ForeignKey(Project,null=True, on_delete=models.CASCADE)
-    user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
+    proposal_template_id = models.ForeignKey(
+        ProposalTemplate, null=True, on_delete=models.CASCADE)
+    project_id = models.ForeignKey(
+        Project, null=True, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(
+        UserRegistration, null=True, on_delete=models.CASCADE)
     job_url_link = models.CharField(max_length=500, default=None)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
