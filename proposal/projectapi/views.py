@@ -244,13 +244,12 @@ class CreateUserProjectTemplate(CreateAPIView):
     allowed_methods = ('POST',)
 
     def post(self, request, format=None):
+        user_id = request.user.id
         serializer = UserProjectTemplateSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            userprojecttemplate = serializer.save()
-            data['user_id'] = userprojecttemplate.id
-            data['created'] = userprojecttemplate.created
-            data['modified'] = userprojecttemplate.modified
+            serializer.save()
+            data['user_id'] = user_id
 
         else:
             data = serializer.errors
@@ -314,13 +313,12 @@ class CreateUserProposalTemplate(CreateAPIView):
     allowed_methods = ('POST',)
 
     def post(self, request, format=None):
+        user_id = request.user.id
         serializer = UserProposalTemplateSerializer(data=request.data)
         data = {}
         if serializer.is_valid():
-            userproposalTemplate = serializer.save()
-            data['user_id'] = userproposalTemplate.user_id
-            data['created'] = userproposalTemplate.created
-            data['modified'] = userproposalTemplate.modified
+            serializer.save()
+            data['user_id'] = user_id
         else:
             data = serializer.errors
             print('Error', data.keys())
@@ -392,8 +390,6 @@ class CreateJobPost(CreateAPIView):
             data['project_id'] = JobPostTemplate.project_id
             data['user_id'] = JobPostTemplate.user_id
             data['job_url_link'] = JobPostTemplate.job_url_link
-            data['created'] = JobPostTemplate.created
-            data['modified'] = JobPostTemplate.modified
         else:
             data = serializer.errors
             print('Error', data.keys())

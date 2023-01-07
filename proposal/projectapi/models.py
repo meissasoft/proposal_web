@@ -1,12 +1,9 @@
 from django.db import models
-
 from proposalapi.models import UserRegistration
 
-
-# from proposalapi.models import UserRegistration
-
-
 # Create your models here.
+
+# Project Model
 class Project(models.Model):
     name = models.CharField(max_length=500)
     description = models.CharField(max_length=10000, default=None)
@@ -20,6 +17,7 @@ class Project(models.Model):
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
+# User Project Model
 class UserProject(models.Model):
     user_id = models.ForeignKey(
         UserRegistration, null=True, on_delete=models.CASCADE)
@@ -29,6 +27,7 @@ class UserProject(models.Model):
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
+# Project Template Model
 class ProjectTemplate(models.Model):
     class Status(models.IntegerChoices):
         CREATED = 1
@@ -42,6 +41,7 @@ class ProjectTemplate(models.Model):
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
+# Proposal Template Model
 class ProposalTemplate(models.Model):
     class Status(models.IntegerChoices):
         CREATED = 1
@@ -55,6 +55,7 @@ class ProposalTemplate(models.Model):
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
+# User Project Template Model
 class UserProjectTemplate(models.Model):
     user_id = models.ForeignKey(
         UserRegistration, null=True, on_delete=models.CASCADE)
@@ -62,6 +63,7 @@ class UserProjectTemplate(models.Model):
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
+# User Proposal Template Model
 class UserProposaltemplate(models.Model):
     user_id = models.ForeignKey(
         UserRegistration, null=True, on_delete=models.CASCADE)
@@ -69,6 +71,7 @@ class UserProposaltemplate(models.Model):
     modified = models.DateTimeField(auto_now=True, editable=False)
 
 
+# JobPost Model
 class JobPost(models.Model):
     proposal_template_id = models.ForeignKey(
         ProposalTemplate, null=True, on_delete=models.CASCADE)
@@ -79,3 +82,4 @@ class JobPost(models.Model):
     job_url_link = models.CharField(max_length=500, default=None)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
+    
