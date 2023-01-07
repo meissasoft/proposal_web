@@ -55,9 +55,16 @@ class UserProjectTemplate(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
-class UserProposalemplate(models.Model):
+class UserProposaltemplate(models.Model):
     user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
-    models.JSONField
+
+class JobPost(models.Model):
+    proposal_template_id = models.ForeignKey(ProposalTemplate,null=True, on_delete=models.CASCADE)
+    project_id = models.ForeignKey(Project,null=True, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(UserRegistration,null=True, on_delete=models.CASCADE)
+    job_url_link = models.CharField(max_length=500, default=None)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)
