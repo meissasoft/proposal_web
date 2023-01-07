@@ -6,7 +6,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, D
 from rest_framework.views import APIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-# from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter
 # from rest_framework.permissions import IsAuthenticated
 # from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 # from rest_framework.decorators import authentication_classes, permission_classes
@@ -40,6 +40,7 @@ class CreateProject(CreateAPIView):
 class ProjectListView(ListAPIView):
     serializer_class = ProjectSerializer
     allowed_methods = ('GET',)
+
 
     def get(self, request, *args, **kwargs):
         try:
@@ -98,6 +99,12 @@ class DeleteProject(DestroyAPIView):
         get_project_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class SearchProjectData(ListAPIView):
+
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'languages', 'platform', 'project_earning']
 
 # Project Template CRUD
 class CreateProjectTemplate(CreateAPIView):
@@ -124,6 +131,8 @@ class CreateProjectTemplate(CreateAPIView):
 class ProjectTemplateListView(ListAPIView):
     serializer_class = ProjectTemplateSerializer
     allowed_methods = ('GET',)
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'content', 'status']
 
     def get(self, request, *args, **kwargs):
         try:
@@ -167,6 +176,13 @@ class DeleteProjectTemplate(DestroyAPIView):
         serializer = ProjectTemplateSerializer(get_projectTemplate_obj)
         get_projectTemplate_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class SearchProjectTemplateData(ListAPIView):
+
+    queryset = ProjectTemplate.objects.all()
+    serializer_class = ProjectTemplateSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'content', 'status']
 
 
 # Proposal Template CRUD
@@ -192,6 +208,7 @@ class CreateProposalTemplate(CreateAPIView):
 class ProposalTemplateListView(ListAPIView):
     serializer_class = ProposalTemplateSerializer
     allowed_methods = ('GET',)
+    
 
     def get(self, request, *args, **kwargs):
         try:
@@ -237,6 +254,12 @@ class DeleteProposalTemplate(DestroyAPIView):
         get_proposalTemplate_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class SearchProposalTemplateData(ListAPIView):
+
+    queryset = ProposalTemplate.objects.all()
+    serializer_class = ProposalTemplateSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'content', 'status']
 
 # User Project Template CRUD
 class CreateUserProjectTemplate(CreateAPIView):
@@ -260,6 +283,7 @@ class CreateUserProjectTemplate(CreateAPIView):
 class UserProjectTemplateListView(ListAPIView):
     serializer_class = UserProjectTemplateSerializer
     allowed_methods = ('GET',)
+
 
     def get(self, request, *args, **kwargs):
         try:
@@ -306,6 +330,12 @@ class DeleteUserProjectTemplate(DestroyAPIView):
         get_userprojectTemplate_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class SearchUserProjectTemplateData(ListAPIView):
+
+    queryset = UserProjectTemplate.objects.all()
+    serializer_class = UserProjectTemplateSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['user_id']
 
 # User Proposal Template CRUD
 class CreateUserProposalTemplate(CreateAPIView):
@@ -328,6 +358,8 @@ class CreateUserProposalTemplate(CreateAPIView):
 class UserProposalTemplateListView(ListAPIView):
     serializer_class = UserProposalTemplateSerializer
     allowed_methods = ('GET',)
+    filter_backends = [SearchFilter]
+    search_fields = ['user_id']
 
     def get(self, request, *args, **kwargs):
         try:
@@ -375,7 +407,14 @@ class DeleteUserProposalTemplate(DestroyAPIView):
         get_userproposalTemplate_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class SearchUserProposalTemplateData(ListAPIView):
 
+    queryset = UserProposaltemplate.objects.all()
+    serializer_class = UserProposalTemplateSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['user_id']
+    
+    
 # JobPost CRUD
 class CreateJobPost(CreateAPIView):
     serializer_class = JobPostSerializer
@@ -399,6 +438,7 @@ class CreateJobPost(CreateAPIView):
 class JobPostListView(ListAPIView):
     serializer_class = JobPostSerializer
     allowed_methods = ('GET',)
+
 
     def get(self, request, *args, **kwargs):
         try:
@@ -445,3 +485,10 @@ class DeleteJobPost(DestroyAPIView):
             get_JobPost_obj)
         get_JobPost_obj.delete()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class SearchJobPostData(ListAPIView):
+
+    queryset = JobPost.objects.all()
+    serializer_class = JobPostSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['proposal_template_id', 'project_id', 'user_id']
