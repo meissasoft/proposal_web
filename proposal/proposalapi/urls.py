@@ -30,6 +30,7 @@ urlpatterns = [
     path('getuserbyid<str:pk>', views.GetUserById.as_view(), name='get_user_by_id'),
     path('get_current_user', views.GetCurrentUser.as_view(), name='get_current_user'),
     path('delete_user/<str:pk>', views.DeleteUser.as_view(), name='Delete_user_by_id'),
+    path('filter_user', views.FilterUser.as_view(), name='filter_user'),
 
     path('login', obtain_auth_token, name="Get Token"),
 

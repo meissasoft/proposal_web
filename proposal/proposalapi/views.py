@@ -14,7 +14,7 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 import base64
 from django.core.files.base import ContentFile
-
+from django.db.models import Q
 # Create your views here.
 class RegisterUser(CreateAPIView):
     serializer_class = RegisterSerializer
@@ -47,6 +47,8 @@ class GetUserById(APIView):
             return Response({"Error": "This User not found"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = RegisterSerializer(get_user)
         return Response(serializer.data)
+
+
 
 
 class GetCurrentUser(APIView):
@@ -108,12 +110,30 @@ class DeleteUser(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class SearchData(ListAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+    queryset = UserRegistration.objects.all()
+    serializer_class = RegisterSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['title', 'description']
+    search_fields = ['stack','languages','email']
+
 from django.shortcuts import render
 
 # Create your views here.
+class FilterUser(APIView):
+    serializer_class = RegisterSerializer
+    allowed_methods = ('GET',)
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            get_user = UserRegistration.objects.all()
+            languages = self.request.query_params.get("languages",None)
+            if languages:
+
+                get_user = UserRegistration.objects.filter(languages=languages)
+        except Exception as e:
+            print("error", e)
+            return Response({"Error": "This User not found"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = RegisterSerializer(get_user,many=True)
+        return Response(serializer.data)
