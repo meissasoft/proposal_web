@@ -53,4 +53,34 @@ urlpatterns = [
          name='update_proposal_template'),
     path('delete_proposal_template', views.DeleteProposalTemplate.as_view(),
          name='delete_proposal_template'),
+
+    # URLs for User Project Template
+    path('create_user_project_template', views.CreateUserProjectTemplate.as_view(),
+         name='create_user_project_template'),
+    path('list_user_project_template', views.UserProjectTemplateListView.as_view(),
+         name='list_user_project_template'),
+    path('update_user_project_template', views.UpdateUserProjectTemplate.as_view(),
+         name='update_user_project_template'),
+    path('delete_user_project_template', views.DeleteUserProjectTemplate.as_view(),
+         name='delete_user_project_template'),
+
+    # URLs for Proposal Template
+    path('create_user_proposal_template', views.CreateUserProposalTemplate.as_view(),
+         name='create_user_proposal_template'),
+    path('list_user_proposal_template', views.UserProposalTemplateListView.as_view(),
+         name='list_user_proposal_template'),
+    path('update_user_proposal_template', views.UpdateUserProposalTemplate.as_view(),
+         name='update_user_proposal_template'),
+    path('delete_user_proposal_template', views.DeleteUserProposalTemplate.as_view(),
+         name='delete_user_proposal_template'),
+
+    # URLs for JobPost
+    path('create_jobpost', views.CreateJobPost.as_view(),
+         name='create_jobpost'),
+    path('list_jobpost', views.JobPostListView.as_view(),
+         name='list_jobpost'),
+    path('update_jobpost', views.UpdateJobPost.as_view(),
+         name='update_jobpost'),
+    path('delete_jobpost', views.DeleteJobPost.as_view(),
+         name='delete_jobpost'),
 ]
