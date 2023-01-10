@@ -1,12 +1,14 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializer import JobPostSerializer, ProjectSerializer, ProjectTemplateSerializer, ProposalTemplateSerializer, UserProjectTemplateSerializer, UserProposalTemplateSerializer
+from .serializer import JobPostSerializer, ProjectSerializer, ProjectTemplateSerializer, ProposalTemplateSerializer, \
+    UserProjectTemplateSerializer, UserProposalTemplateSerializer, CreateProposalTemplateSerializer
 from .models import JobPost, Project, ProjectTemplate, ProposalTemplate, UserProjectTemplate, UserProposaltemplate
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.views import APIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.filters import SearchFilter
+from proposalapi.models import UserRegistration
 # from rest_framework.permissions import IsAuthenticated
 # from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 # from rest_framework.decorators import authentication_classes, permission_classes
@@ -492,3 +494,54 @@ class SearchJobPostData(ListAPIView):
     serializer_class = JobPostSerializer
     filter_backends = [SearchFilter]
     search_fields = ['proposal_template_id', 'project_id', 'user_id']
+
+
+class ProposalTemplateCreate(CreateAPIView):
+    serializer_class = CreateProposalTemplateSerializer
+    allowed_methods = ('POST',)
+
+    def post(self, request, format=None):
+        print(request.data)
+        user_id = request.data['userID']
+        projectIds = request.data['projectIds']
+        project_ids = projectIds.split(",")
+        proposal_tempalte_id = request.data['proposal_tempalte_id']
+        project_template_id = request.data["project_template_id"]
+
+
+        projects_list = []
+        for project in project_ids:
+            project_obj = Project.objects.get(id=project)
+            print(project_obj.name)
+            project_template_obj = ProjectTemplate.objects.get(id=project_template_id)
+            project_template_content = project_template_obj.content
+            print(project_template_content)
+            char_to_replace = {'project_name': project_obj.name, 'project_url': project_obj.project_url_link,}
+
+            for key, value in char_to_replace.items():
+                # Replace key character with value character in string
+                project_template_content = project_template_content.replace(key, value)
+
+            print(project_template_content)
+
+            projects_list.append(project_template_content + "\n")
+        user_obj = UserRegistration.objects.get(id=user_id)
+        print(user_obj.username)
+        print(user_obj.stack)
+        proposal_tempalte_obj = ProposalTemplate.objects.get(id=proposal_tempalte_id)
+        proposal_tempalte_content = proposal_tempalte_obj.content
+        print(proposal_tempalte_content)
+        projects = " "
+
+        char_to_replace = {'UserName': user_obj.username,'Title': user_obj.stack,"Stack": "Full stack", "Languages":user_obj.languages,
+                           "Projects":projects.join(projects_list), "Username":user_obj.username }
+        for key, value in char_to_replace.items():
+            # Replace key character with value character in string
+            proposal_tempalte_content = proposal_tempalte_content.replace(key, value)
+
+        print(proposal_tempalte_content)
+
+        return Response({"detail":proposal_tempalte_content})
+
+
+

@@ -38,3 +38,13 @@ class JobPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobPost
         fields = "__all__"
+
+
+class CreateProposalTemplateSerializer(serializers.ModelSerializer):
+    userID = serializers.IntegerField()
+    projectIds = serializers.CharField()
+    proposal_tempalte_id =  serializers.IntegerField()
+    project_template_id = serializers.IntegerField()
+    class Meta:
+        model = JobPost
+        fields = ["userID","projectIds","proposal_tempalte_id","project_template_id"]
