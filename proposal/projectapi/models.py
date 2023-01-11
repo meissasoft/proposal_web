@@ -16,6 +16,9 @@ class Project(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
+    def __str__(self):
+        return self.name
+
 
 # User Project Model
 class UserProject(models.Model):
@@ -40,6 +43,9 @@ class ProjectTemplate(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
+    def __str__(self):
+        return self.name
+
 
 # Proposal Template Model
 class ProposalTemplate(models.Model):
@@ -53,6 +59,9 @@ class ProposalTemplate(models.Model):
         choices=Status.choices, default=Status.CREATED)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
+
+    def __str__(self):
+        return self.name
 
 
 # User Project Template Model
