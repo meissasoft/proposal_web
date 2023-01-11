@@ -1,16 +1,17 @@
 from django.contrib import admin
+
 from .models import Project, UserProject, ProjectTemplate, ProposalTemplate, UserProjectTemplate, UserProposaltemplate, JobPost
 
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'description', 'tags', 'project_url_link', 'languages',
-                    'platform', 'project_github_link', 'project_earning', 'created', 'modified']
+                    'platform', 'project_github_link', 'project_earning', 'created']
 
 
 @admin.register(UserProject)
 class UserProjectAdmin(admin.ModelAdmin):
-    list_display = ['id','user_id', 'project_id', 'created', 'modified']
+    list_display = ['id','user_id', 'project_id', 'created']
 
 
 @admin.register(ProjectTemplate)
@@ -36,4 +37,4 @@ class UserProposaltemplateAdmin(admin.ModelAdmin):
 @admin.register(JobPost)
 class JobPostAdmin(admin.ModelAdmin):
     list_display = ['id','proposal_template_id', 'project_id',
-                    'user_id', 'job_url_link', 'created', 'modified']
+                    'user_id', 'job_url_link', 'created']

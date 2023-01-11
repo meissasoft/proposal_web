@@ -23,7 +23,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserRegistration
-        fields = ('username', 'email', 'password','linkdin_url','mobile_no','linkdin_url','github_url','stack','year_of_experience','languages',
+        fields = ('username', 'email', 'password','linkdin_url','mobile_no','github_url','stack','year_of_experience','languages',
                   'role','profile_picture','price_range','resume_drive_link'
                   )
 
@@ -33,6 +33,15 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=self.validated_data['email'],
             username=self.validated_data['username'],
             profile_picture=self.validated_data['profile_picture'],
+            linkdin_url=self.validated_data['linkdin_url'],
+            mobile_no=self.validated_data['mobile_no'],
+            github_url=self.validated_data['github_url'],
+            stack=self.validated_data['stack'],
+            year_of_experience=self.validated_data['year_of_experience'],
+            languages=self.validated_data['languages'],
+            role=self.validated_data['role'],
+            price_range=self.validated_data['price_range'],
+            resume_drive_link=self.validated_data['resume_drive_link'],
         )
         password = self.validated_data['password']
         account.set_password(password)

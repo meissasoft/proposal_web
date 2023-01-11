@@ -102,4 +102,7 @@ urlpatterns = [
          name='delete_jobpost'),
     path('get_jobpost_data', views.SearchJobPostData.as_view(), name='JobPost Data'),
 
+
+    path('ProposalTemplateCreate', views.ProposalTemplateCreate.as_view(),
+         name='ProposalTemplateCreate'),
 ]
