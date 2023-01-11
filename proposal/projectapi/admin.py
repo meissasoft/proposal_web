@@ -51,5 +51,5 @@ class UserAttributeAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProjectAttribute)
-class UserAttributeAdmin(admin.ModelAdmin):
+class ProjectAttributeAdmin(admin.ModelAdmin):
     list_display = ['id', 'project', 'attribute_value', 'created']

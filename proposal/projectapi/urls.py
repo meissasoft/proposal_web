@@ -21,8 +21,8 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-     
-     path('admin/', admin.site.urls),
+
+    path('admin/', admin.site.urls),
     path(r'^swagger(?P<format>\.json|\.yaml)$',
          schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('', schema_view.with_ui('swagger',
@@ -63,6 +63,8 @@ urlpatterns = [
          name='delete_proposal_template'),
     path('get_proposal_template_data', views.SearchProposalTemplateData.as_view(
     ), name='Proposal Template Data'),
+    path('ProposalTemplateCreate', views.ProposalTemplateCreate.as_view(),
+         name='ProposalTemplateCreate'),
 
 
     # URLs for User Project Template
@@ -102,11 +104,7 @@ urlpatterns = [
          name='delete_jobpost'),
     path('get_jobpost_data', views.SearchJobPostData.as_view(), name='JobPost Data'),
 
-
-    path('ProposalTemplateCreate', views.ProposalTemplateCreate.as_view(),
-         name='ProposalTemplateCreate'),
-    
-     # URLs for Attribute
+    # URLs for Attribute
     path('create_attribute', views.CreateAttribute.as_view(),
          name='create_attribute'),
     path('list_attribute', views.AttributeListView.as_view(),
@@ -115,9 +113,10 @@ urlpatterns = [
          name='update_attribute'),
     path('delete_attribute/<str:pk>', views.DeleteAttribute.as_view(),
          name='delete_attribute'),
-    path('get_attribute_data', views.SearchAttribute.as_view(), name='Attribute Data'),
+    path('get_attribute_data', views.SearchAttribute.as_view(),
+         name='Attribute Data'),
 
-     # URLs for User Attribute
+    # URLs for User Attribute
     path('create_user_attribute', views.CreateUserAttribute.as_view(),
          name='create_user_attribute'),
     path('list_user_attribute', views.UserAttributeListView.as_view(),
@@ -126,9 +125,10 @@ urlpatterns = [
          name='update_user_attribute'),
     path('delete_user_attribute/<str:pk>', views.DeleteUserAttribute.as_view(),
          name='delete_user_attribute'),
-    path('get_user_attribute_data', views.SearchUserAttribute.as_view(), name='User Attribute Data'),
+    path('get_user_attribute_data', views.SearchUserAttribute.as_view(),
+         name='User Attribute Data'),
 
-     # URLs for Project Attribute
+    # URLs for Project Attribute
     path('create_project_attribute', views.CreateProjectAttribute.as_view(),
          name='create_project_attribute'),
     path('list_project_attribute', views.ProjectAttributeListView.as_view(),
@@ -137,5 +137,6 @@ urlpatterns = [
          name='update_project_attribute'),
     path('delete_project_attribute/<str:pk>', views.DeleteProjectAttribute.as_view(),
          name='delete_project_attribute'),
-    path('get_project_attribute_data', views.SearchProjectAttribute.as_view(), name='Project Attribute Data'),
+    path('get_project_attribute_data',
+         views.SearchProjectAttribute.as_view(), name='Project Attribute Data'),
 ]

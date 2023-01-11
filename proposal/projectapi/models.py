@@ -4,6 +4,8 @@ from proposalapi.models import UserRegistration
 # Create your models here.
 
 # Project Model
+
+
 class Project(models.Model):
     name = models.CharField(max_length=500)
     description = models.CharField(max_length=10000, default=None)
@@ -99,6 +101,9 @@ class Attribute(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
 
+    def __str__(self):
+        return self.name
+
 
 class UserAttribute(models.Model):
     user = models.ForeignKey(
@@ -106,6 +111,7 @@ class UserAttribute(models.Model):
     attribute_value = models.CharField(max_length=500, default=None)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
+
 
 class ProjectAttribute(models.Model):
     project = models.ForeignKey(
