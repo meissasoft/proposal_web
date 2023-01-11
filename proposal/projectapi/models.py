@@ -91,4 +91,25 @@ class JobPost(models.Model):
     job_url_link = models.CharField(max_length=500, default=None)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True, editable=False)
-    
+
+
+class Attribute(models.Model):
+
+    name = models.CharField(max_length=500, default=None)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)
+
+
+class UserAttribute(models.Model):
+    user = models.ForeignKey(
+        UserRegistration, null=True, on_delete=models.CASCADE)
+    attribute_value = models.CharField(max_length=500, default=None)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)
+
+class ProjectAttribute(models.Model):
+    project = models.ForeignKey(
+        Project, null=True, on_delete=models.CASCADE)
+    attribute_value = models.CharField(max_length=500, default=None)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True, editable=False)

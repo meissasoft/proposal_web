@@ -501,7 +501,6 @@ class ProposalTemplateCreate(CreateAPIView):
     allowed_methods = ('POST',)
 
     def post(self, request, format=None):
-        print(request.data)
         user_id = request.data['userID']
         projectIds = request.data['projectIds']
         project_ids = projectIds.split(",")
@@ -512,36 +511,47 @@ class ProposalTemplateCreate(CreateAPIView):
         projects_list = []
         for project in project_ids:
             project_obj = Project.objects.get(id=project)
-            print(project_obj.name)
-            project_template_obj = ProjectTemplate.objects.get(id=project_template_id)
-            project_template_content = project_template_obj.content
-            print(project_template_content)
-            char_to_replace = {'project_name': project_obj.name, 'project_url': project_obj.project_url_link,}
+            if project_obj:
+                project_template_obj = ProjectTemplate.objects.get(id=project_template_id)
+                if project_template_obj:
+                    project_template_content = project_template_obj.content
+                    char_to_replace = {'project_name': project_obj.name, 'project_url': project_obj.project_url_link,}
 
-            for key, value in char_to_replace.items():
-                # Replace key character with value character in string
-                project_template_content = project_template_content.replace(key, value)
+                    for key, value in char_to_replace.items():
+                        # Replace key character with value character in string
+                        project_template_content = project_template_content.replace(key, value)
 
-            print(project_template_content)
 
-            projects_list.append(project_template_content + "\n")
+                    projects_list.append(project_template_content + "\n")
+
+                else:
+                    return Response({"message": f"project template not found against this project_template_id  {project_template_id}"})
+
+            else:
+                return Response({"message": f"project not found against this project_id {project}"})
+
         user_obj = UserRegistration.objects.get(id=user_id)
-        print(user_obj.username)
-        print(user_obj.stack)
-        proposal_tempalte_obj = ProposalTemplate.objects.get(id=proposal_tempalte_id)
-        proposal_tempalte_content = proposal_tempalte_obj.content
-        print(proposal_tempalte_content)
-        projects = " "
+        if user_obj:
 
-        char_to_replace = {'UserName': user_obj.username,'Title': user_obj.stack,"Stack": "Full stack", "Languages":user_obj.languages,
-                           "Projects":projects.join(projects_list), "Username":user_obj.username }
-        for key, value in char_to_replace.items():
-            # Replace key character with value character in string
-            proposal_tempalte_content = proposal_tempalte_content.replace(key, value)
+            proposal_tempalte_obj = ProposalTemplate.objects.get(id=proposal_tempalte_id)
+            if proposal_tempalte_obj:
+                proposal_tempalte_content = proposal_tempalte_obj.content
+                projects = " "
 
-        print(proposal_tempalte_content)
+                char_to_replace = {'UserName': user_obj.username,'Title': user_obj.stack,"Stack": "Full stack", "Languages":user_obj.languages,
+                                   "Projects":projects.join(projects_list), "Username":user_obj.username }
+                for key, value in char_to_replace.items():
+                    # Replace key character with value character in string
+                    proposal_tempalte_content = proposal_tempalte_content.replace(key, value)
 
-        return Response({"detail":proposal_tempalte_content})
+
+                return Response({"detail":proposal_tempalte_content})
+            else:
+                return Response(
+                    {"message": f"proposal template not found against this proposal_template_id  {proposal_tempalte_id}"})
+
+        else:
+            return Response({"message": f"user not found against this id {user_id}"})
 
 
 
